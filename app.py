@@ -30,7 +30,7 @@ def send_help_message(sender_id):
     send_message(sender_id, help_message)
 
 # Send greeting message to user
-def send_help_message(sender_id):
+def send_greeting_message(sender_id):
     greeting_message = """ Hi, I'm riskbot! How can I help you better manage portfolio risk today? 
                            Enter a suitable option or \"help\" to view the help menu. """
     send_message(sender_id, greeting_message)
