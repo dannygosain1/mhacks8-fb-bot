@@ -22,9 +22,7 @@ mongo = PyMongo(app)
 
 # Send help message to user
 def send_help_message(sender_id):
-    help_message = """ Usage: [option] ... [argument]:
-                       portfolio [buy | sell | show]: update exisiting protfolio 
-                       analysis [ | ]: analyze portfolio risk """
+    help_message = "Usage: [option] ... [argument]: portfolio [buy | sell | show]: update exisiting protfolio analysis [ | ]: analyze portfolio risk"
     send_message(sender_id, help_message)
 
 # Send greeting message to user
