@@ -32,7 +32,8 @@ def send_help_message(sender_id):
 
 # Send greeting message to user
 def send_greeting_message(sender_id):
-    greeting_message = "Hi, I'm RiskBot! How can I help you today? Enter a suitable option or [help] to view the help menu..."
+    greeting_message = ("Hi, I'm RiskBot! How can I help you today?\n"
+                        "Enter a suitable option or [help] to view the help menu...")
     send_message(sender_id, greeting_message)
 
 @app.route('/')
