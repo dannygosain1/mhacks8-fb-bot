@@ -1,12 +1,24 @@
 import os
 import sys
 import json
-
 import requests
+import simplejson
 from flask import Flask, request
+from flask_pymongo import PyMongo
+# from bson import ObjectId
+# from bson import json_util
+# from bson.json_util import dumps
+# import ast
 
+# Create Flask App
 app = Flask(__name__)
 
+# Set Up Database Connections
+app.config['MONGO_DBNAME'] = 'portfolio-risk-bot'
+app.config['MONGO_URI'] = 'mongodb://mhacks8:mhacks8@ds053216.mlab.com:53216/portfolio-risk-bot'
+
+# Create Database Object
+mongo = PyMongo(app)
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -16,6 +28,10 @@ def verify():
         if not request.args.get("hub.verify_token") == os.environ["VERIFY_TOKEN"]:
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
+
+    x = {"name": "sadu"}
+
+    mongo.db.portfolio.insert(x)
 
     return "Hello world", 200
 
@@ -38,8 +54,6 @@ def webhook():
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
-
-                    log("yooooooo")
 
                     send_message(sender_id, "got it, thanks!")
 
