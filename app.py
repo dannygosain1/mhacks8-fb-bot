@@ -27,7 +27,7 @@ def send_help_message(sender_id):
                     "portfolio [show]: display contents of exisiting protfolio\n" 
                     "portfolio [buy | sell] (security, quantity): update exisiting protfolio\n" 
                     "analysis [ | ]: analyze portfolio risk"
-                    "help: show this menu"))
+                    "help: show this menu")
     send_message(sender_id, help_message)
 
 # Send greeting message to user
