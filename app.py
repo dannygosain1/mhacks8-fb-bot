@@ -39,7 +39,7 @@ def send_greeting_message(sender_id):
 # Send existing portfolio to user
 def send_portfolio(sender_id):
     portfolio = mongo.db.portfolio.find( {} )
-    send_message(sender_id, greeting_message)
+    send_message(sender_id, portfolio)
 
 @app.route('/')
 def verify():
@@ -83,7 +83,7 @@ def webhook():
                         send_portfolio(sender_id)
                     elif message_text == "PORTFOLIO BUY":
                         pass
-                    elif message_text == "PORTFOLIO SELL"
+                    elif message_text == "PORTFOLIO SELL":
                         pass
                     elif message_text == "HELP":
                         send_help_message(sender_id)
