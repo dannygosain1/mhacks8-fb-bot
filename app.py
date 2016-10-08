@@ -1,14 +1,41 @@
 import os
 import sys
 import json
-
 import requests
+import simplejson
 from flask import Flask, request
+from flask_pymongo import PyMongo
+# from bson import ObjectId
+# from bson import json_util
+# from bson.json_util import dumps
+# import ast
 
+# Create Flask App
 app = Flask(__name__)
 
+# Set Up Database Connections
+app.config['MONGO_DBNAME'] = 'portfolio-risk-bot'
+app.config['MONGO_URI'] = 'mongodb://mhacks8:mhacks8@ds053216.mlab.com:53216/portfolio-risk-bot'
 
-@app.route('/', methods=['GET'])
+# Create Database Object
+mongo = PyMongo(app)
+
+# Send help message to user
+def send_help_message(sender_id):
+    help_message = """ Usage: [option] ... [argument]
+                           Options and arguments:
+                               portfolio [buy | sell | show]: build new or update exisiting protfolio 
+                               analysis [ | ]: analyze portfolio risk by running different scenarios 
+                               help: show this menu """
+    send_message(sender_id, help_message)
+
+# Send greeting message to user
+def send_greeting_message(sender_id):
+    greeting_message = """ Hi, I'm riskbot! How can I help you better manage portfolio risk today? 
+                           Enter a suitable option or \"help\" to view the help menu. """
+    send_message(sender_id, greeting_message)
+
+@app.route('/')
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
     # the 'hub.challenge' value it receives in the query arguments
@@ -16,17 +43,19 @@ def verify():
         if not request.args.get("hub.verify_token") == os.environ["VERIFY_TOKEN"]:
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
-
     return "Hello world", 200
 
+@app.route('/test', methods=['GET'])
+def test():
+    mongo.db.portfolio.insert({ "name": "sadu" })
+    return "Hello world test", 200
 
 @app.route('/', methods=['POST'])
 def webhook():
 
     # endpoint for processing incoming messaging events
-
     data = request.get_json()
-    log(data)  # you may not want to log every incoming message in production, but it's good for testing
+    log(data)
 
     if data["object"] == "page":
 
@@ -35,11 +64,21 @@ def webhook():
 
                 if messaging_event.get("message"):  # someone sent us a message
 
+
+
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
-                    message_text = messaging_event["message"]["text"]  # the message's text
+                    message_text = str(messaging_event["message"]["text"]).upper()  # the message's text
 
-                    send_message(sender_id, "got it, thanks!")
+                    if message_text == "ANALYSIS":
+                        pass
+                    elif message_text == "PORTFOLIO":
+                        pass
+                    elif message_text == "HELP":
+                        send_help_message(sender_id)
+                    else:
+                        send_greeting_message(sender_id)
+
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
