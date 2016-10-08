@@ -22,17 +22,14 @@ mongo = PyMongo(app)
 
 # Send help message to user
 def send_help_message(sender_id):
-    help_message = """ Usage: [option] ... [argument]
-                           Options and arguments:
-                               portfolio [buy | sell | show]: build new or update exisiting protfolio 
-                               analysis [ | ]: analyze portfolio risk by running different scenarios 
-                               help: show this menu """
+    help_message = """ Usage: [option] ... [argument]:
+                       portfolio [buy | sell | show]: update exisiting protfolio 
+                       analysis [ | ]: analyze portfolio risk """
     send_message(sender_id, help_message)
 
 # Send greeting message to user
 def send_greeting_message(sender_id):
-    greeting_message = """ Hi, I'm riskbot! How can I help you better manage portfolio risk today? 
-                           Enter a suitable option or \"help\" to view the help menu. """
+    greeting_message = "Hi, I'm riskbot! How can I help you today? Enter a suitable option or [help] to view the help menu."
     send_message(sender_id, greeting_message)
 
 @app.route('/')
