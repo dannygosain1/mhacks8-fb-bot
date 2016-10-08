@@ -22,11 +22,11 @@ mongo = PyMongo(app)
 
 # Send help message to user
 def send_help_message(sender_id):
-    help_message = ("Usage: [option] ... [argument] ... [params]\n"
-                    "Options and arguments:\n\n"  
+    help_message = ("Usage: [option] ... [argument] ... [params]\n\n"
+                    "Options and arguments:\n"  
                     "portfolio [show]: display contents of exisiting protfolio\n" 
-                    "portfolio [buy | sell] (security, quantity): update exisiting protfolio\n" 
-                    "analysis [ | ]: analyze portfolio risk"
+                    "portfolio [buy | sell] [security & qty]: update exisiting protfolio\n" 
+                    "analysis [ | ]: analyze portfolio risk\n"
                     "help: show this menu")
     send_message(sender_id, help_message)
 
@@ -34,6 +34,11 @@ def send_help_message(sender_id):
 def send_greeting_message(sender_id):
     greeting_message = ("Hi, I'm RiskBot! How can I help you today?\n"
                         "Enter a suitable option or [help] to view the help menu...")
+    send_message(sender_id, greeting_message)
+
+# Send existing portfolio to user
+def send_portfolio(sender_id):
+    portfolio = mongo.db.portfolio.find( {} )
     send_message(sender_id, greeting_message)
 
 @app.route('/')
@@ -71,9 +76,14 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = str(messaging_event["message"]["text"]).upper()  # the message's text
 
+
                     if message_text == "ANALYSIS":
                         pass
-                    elif message_text == "PORTFOLIO":
+                    elif message_text == "PORTFOLIO SHOW":
+                        send_portfolio(sender_id)
+                    elif message_text == "PORTFOLIO BUY":
+                        pass
+                    elif message_text == "PORTFOLIO SELL"
                         pass
                     elif message_text == "HELP":
                         send_help_message(sender_id)
