@@ -188,7 +188,7 @@ def webhook():
                                             param_dict[param["name"]] = param_dict[param["name"]][0].lower() + param_dict[param["name"]][1:]
 
                                         if param["name"].upper() == "EVENT_VAR":
-                                            scenario = param["name"].upper()
+                                            scenario = str(param["value"][0]["entity"]).upper()
 
                                         if len(param_dict) == 1:
 
