@@ -50,8 +50,8 @@ def send_help_message(sender_id):
 
 # Send greeting message to user
 def send_greeting_message(sender_id):
-    greeting_message = ("Hi, I'm RiskBot! How can I help you today?\n"
-                        "Enter a suitable option or [help] to view the help menu...")
+    greeting_message = "Hi, I'm Risk-Bot! How can I help you today?"
+    # "Enter a suitable option or [help] to view the help menu...")
     send_message(sender_id, greeting_message)
 
 # Send existing portfolio to user
@@ -139,7 +139,7 @@ def webhook():
                             send_help_message(sender_id)
                         else:
                             send_greeting_message(sender_id)
-                            
+
                     else:
 
                         luis_response = get_response_from_luis_api(message_text)
@@ -166,7 +166,7 @@ def webhook():
                         elif expected_intent == "riskAnalysis":
                             pass # for now
                         else:
-                            send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the preset tasks!))
+                            send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the default operations!))
                             send_help_message(sender_id)
 
 
