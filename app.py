@@ -152,6 +152,9 @@ def webhook():
                                 for param in params:
                                     if param["name"].upper() in ["QUANTITY", "TICKER", "TRADE_TYPE"] and param["value"][0]["entity"]:
                                         param_dict[param["name"]] = param["value"][0]["entity"]
+
+                                        log(param_dict)
+
                                     if len(param_dict) == 3:
                                         try:
                                             blackrock.portfolio(param_dict["ticker"], param_dict["quantity"], param_dict["trade_type"], sender_id)
