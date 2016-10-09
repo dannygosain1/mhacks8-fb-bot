@@ -128,7 +128,7 @@ def webhook():
 
                     if luis_response["intents"][0]["actions"][0]["parameters"]:
                         param_dict = {}
-                        params = luis_response["intents"][0]["actions"]["parameters"]
+                        params = luis_response["intents"][0]["actions"][0]["parameters"]
                         for param in params:
                             if param["name"].upper() in ["QUANTITY", "TICKER", "TRADE_TYPE"] and param["value"][0]["entity"]:
                                 param_dict[param["name"]] = param["value"][0]["entity"]
