@@ -123,6 +123,24 @@ def webhook():
                     message_text = str(messaging_event["message"]["text"]).upper()  # the message's text
 
 
+                    # 
+
+                    luis_response = get_response_from_luis_api(message_text)
+                    expected_intent = luis_response["intents"][0]["intent"]
+                    log(expected_intent)
+
+
+
+
+
+
+
+
+                    # 
+
+
+
+
                     if message_text == "ANALYSIS":
                         pass
                     elif message_text.split()[0] == "PORTFOLIO":
