@@ -22,8 +22,8 @@ def send_help_message(sender_id):
     help_message = ("Usage: [option] ... [argument] ... [params]\n\n"
                     "Options and arguments:\n"  
                     "portfolio [show]: display contents of exisiting protfolio\n" 
-                    "portfolio [buy | sell] [security & qty]: update exisiting protfolio\n" 
-                    "analysis [ | ]: analyze portfolio risk\n"
+                    "portfolio [buy|sell] [security] [qty]: update exisiting protfolio\n" 
+                    "analysis [|]: analyze portfolio risk\n"
                     "help: show this menu")
     send_message(sender_id, help_message)
 
@@ -83,7 +83,7 @@ def webhook():
                     elif message_text == "PORTFOLIO SHOW":
                         send_portfolio(sender_id)
                     elif message_text == "PORTFOLIO BUY":
-                        pass
+                        send_buy_success_message(sender_id)
                     elif message_text == "PORTFOLIO SELL":
                         pass
                     elif message_text == "HELP":
