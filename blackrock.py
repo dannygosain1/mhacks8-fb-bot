@@ -70,7 +70,7 @@ def updatePortfolio(data,ticker,quantity,senderID):
     data['quantity'] = int(str(data['quantity'])) + int(str(quantity))
     prices = getYahooPrices(ticker)
     data['price'] = float(prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)])
-    if quantity is not 0:
+    if data["quantity"] is not 0:
         updatePortfolioDB(data,senderID)
     else:
         deletePortfolioDB(ticker, senderID)
