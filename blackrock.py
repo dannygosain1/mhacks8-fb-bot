@@ -90,11 +90,11 @@ def addPortfolio(ticker,quantity,senderID):
     data = getResponseData(url)
     info = getStockInfo(data)
     info['quantity'] = quantity
-    prices = getYahooPrices(ticker)
-    info['price'] = prices[random.randrange(0,len(prices) - 1) % (len(prices) - 1)]
     if not info or quantity is 0:
         return False
     else:
+        prices = getYahooPrices(ticker)
+        info['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
         return insertPortfolioDB(info,senderID)
 
 def analyzePortfolio(scenario, senderID):
@@ -107,12 +107,12 @@ def portfolio(ticker,quantity,type,senderID):
         quantity = -quantity
     oldPortfolio = getPortfolio()
     if not oldPortfolio:
-        addPortfolio(ticker,quantity,senderID)
+        return addPortfolio(ticker,quantity,senderID)
     else:
         if ticker in list(oldPortfolio['ticker']):
-            updatePortfolio(oldPortfolio['ticker'],ticker,quantity,senderID)
+            return updatePortfolio(oldPortfolio['ticker'],ticker,quantity,senderID)
         else:
-            addPortfolio(ticker,quantity,senderID)
+            return addPortfolio(ticker,quantity,senderID)
 
 # print getYahooPrices('AGG')
 
