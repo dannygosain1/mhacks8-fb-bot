@@ -61,8 +61,8 @@ def send_update_message(sender_id, data):
     send_message(sender_id, "Positions successfully updated :)")
 
 # Delete from db
-def send_delete_message(sender_id, data):
-    record = mongo.db.portfolio.find_one( {"ticker": data["ticker"]} )
+def send_delete_message(sender_id, ticker):
+    record = mongo.db.portfolio.find_one( {"ticker": ticker} )
     mongo.db.portfolio.remove(record)
     send_message(sender_id, "Positions successfully updated :)")
 
