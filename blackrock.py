@@ -50,9 +50,9 @@ def getAnalysisURL (positions,scenario):
         return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExposures=true&' \
                'calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + '&useCache=true'
     else:
-        return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExposures=true&' \
-           'calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + \
-           'scenarios=' + scenario + '&useCache=true'
+        return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?betaPortfolios = SNP500&calculateExposures=true' \
+           '&calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + \
+           '&riskFreeRatePortfolio = LTBILL1 - 3M&scenarios=' + scenario + '&useCache=true'
 
 def getYahooPrices(ticker):
     prices = []
@@ -142,12 +142,16 @@ def analyzePortfolio(scenario,type,field):
     url = getAnalysisURL(positions,scenarioString)
     print url
     data = getResponseData(url)
-    if (type == 'RISK'):
-        return getRiskData(data,field)
-    elif (type == 'RETURNS'):
-        return getReturns(data,field)
-    elif (type == 'ANALYTICS'):
-        return getAnalyticsMap(data,field)
+    try:
+        if (type == 'RISK'):
+            return getRiskData(data,field)
+        elif (type == 'RETURNS'):
+            return getReturns(data,field)
+        elif (type == 'ANALYTICS'):
+            return getAnalyticsMap(data,field)
+    except Exception as e:
+        app.log(traceback.print_exc())
+        pass
     return ''
 
 def portfolio(ticker,quantity,type,senderID):
