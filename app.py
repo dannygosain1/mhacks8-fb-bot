@@ -185,9 +185,10 @@ def webhook():
 
                                         log(param)
 
-                                        if param["name"].upper() in ["API_VAR", "RISK_VAR"] and param["value"]:
+                                        if param["name"].upper() in ["API_VAR", "RISK_VAR"] and param["value"] is not None:
                                             param_dict[param["name"]] = ''.join(x for x in str(param["value"][0]["entity"]).title() if not x.isspace())
-
+                                            param_dict[param["name"]][-1] = param_dict[param["name"]][-1].lower()
+                                            
                                             log(param_dict)
 
                                         # if len(param_dict) == 1:
