@@ -49,18 +49,17 @@ def send_create_message(sender_id, data):
     mongo.db.portfolio.insert( {json.dumps(data)} )
     send_message(sender_id, "Positions successfully updated!")
 
-
 # Update db
 def send_update_message(sender_id, data):
-    record = mongo.db.portfolio.find_one( {ticker: data["ticker"]} )
+    record = mongo.db.portfolio.find_one( {"ticker": data["ticker"]} )
     record["quantity"] = data["quantity"]
     record["price"] = data["price"]
     mongo.db.portfolio.save(record)
     send_message(sender_id, "Positions successfully updated!")
 
 # Delete from db
-def send_create_message(sender_id, data):
-    record = mongo.db.portfolio.find_one( {ticker: data["ticker"]} )
+def send_delete_message(sender_id, data):
+    record = mongo.db.portfolio.find_one( {"ticker": data["ticker"]} )
     mongo.db.portfolio.remove(record)
     send_message(sender_id, "Positions successfully updated!")
 
@@ -74,14 +73,10 @@ def verify():
         return request.args["hub.challenge"], 200
     return "Hello world", 200
 
-@app.route('/test', methods=['GET'])
+@app.route('/test', methods=['POST'])
 def test():
-    portfolio = mongo.db.portfolio.find( {} )
-    log(portfolio)
-    log("hello")
-    log(dumps(portfolio))
-
-    return "Hello world test", 200
+    data = request.json()
+    return mongo.db.portfolio.insert( {data} ), 200
 
 @app.route('/', methods=['POST'])
 def webhook():
