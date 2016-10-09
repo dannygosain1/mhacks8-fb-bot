@@ -8,7 +8,7 @@ import random
 # url = 'https://www.blackrock.com/tools/api-tester/hackathon?apiType=securityData&identifiers=GOOG&includePrices=true&query=GOOG&useCache=true'
 # url = 'https://www.blackrock.com/tools/hackathon/security-data?identifiers=GOOG&includePrices=true&query=GOOG'
 # url = 'https://www.blackrock.com/tools/api-tester/hackathon?apiType=portfolioAnalysis&betaPortfolios=SNP500&calculateExposures=true&calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=AAPL~25%7CVWO~25%7CAGG~25%7CMALOX~25%7C&riskFreeRatePortfolio=LTBILL1-3M&scenarios=HIST_20081102_20080911%2CHIST_20110919_20110720%2CHIST_20130623_20130520%2CHIST_20140817_20140101%2CUS10Y_1SD%3A%3AAPB%2CINF2Y_1SD%3A%3AAPB%2CUSIG_1SD%3A%3AAPB%2CSPX_1SD%3A%3AAPB%2CDXY_1SD%3A%3AAPB&useCache=true'
-# url = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis&betaPortfolios=SNP500&calculateExposures=true&calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=AAPL~25%7CVWO~25%7CAGG~25%7CMALOX~25%7C&riskFreeRatePortfolio=LTBILL1-3M&scenarios=HIST_20081102_20080911%2CHIST_20110919_20110720%2CHIST_20130623_20130520%2CHIST_20140817_20140101%2CUS10Y_1SD%3A%3AAPB%2CINF2Y_1SD%3A%3AAPB%2CUSIG_1SD%3A%3AAPB%2CSPX_1SD%3A%3AAPB%2CDXY_1SD%3A%3AAPB&useCache=true'
+# url = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?betaPortfolios=SNP500&calculateExposures=true&calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=AAPL~25%7CVWO~25%7CAGG~25%7CMALOX~25%7C&riskFreeRatePortfolio=LTBILL1-3M&scenarios=HIST_20081102_20080911%2CHIST_20110919_20110720%2CHIST_20130623_20130520%2CHIST_20140817_20140101%2CUS10Y_1SD%3A%3AAPB%2CINF2Y_1SD%3A%3AAPB%2CUSIG_1SD%3A%3AAPB%2CSPX_1SD%3A%3AAPB%2CDXY_1SD%3A%3AAPB&useCache=true'
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36',
@@ -35,7 +35,7 @@ def getSearchURL(ticker):
 def getAnalysisURL (positions,scenario):
     # positions: AAPL~25%7CVWO~25%7CAGG~25%7CMALOX~25%7C
     # scenario: HIST_20081102_20080911%2CHIST_20110919_20110720%2CHIST_20130623_20130520%2CHIST_20140817_20140101%2CUS10Y_1SD%3A%3AAPB%2CINF2Y_1SD%3A%3AAPB%2CUSIG_1SD%3A%3AAPB%2CSPX_1SD%3A%3AAPB%2CDXY_1SD%3A%3AAPB
-    return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis&betaPortfolios=SNP500&calculateExposures=true&' \
+    return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?betaPortfolios=SNP500&calculateExposures=true&' \
            'calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + \
            '&riskFreeRatePortfolio=LTBILL1-3M&' \
            'scenarios=' + scenario + '&useCache=true'
@@ -54,6 +54,10 @@ def updatePortfolio(data,ticker,quantity):
     data['quantity'] = data['quantity'] + quantity
     prices = getYahooPrices(ticker)
     data['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
+    # if quantity is 0:
+    #     delete
+    # else:
+    #
     return True
 
 def getPortfolio():
@@ -76,7 +80,7 @@ def addPortfolio(ticker,quantity):
     info['quantity'] = quantity
     prices = getYahooPrices(ticker)
     info['price'] = prices[random.randrange(0,len(prices) - 1) % (len(prices) - 1)]
-    if not info:
+    if not info or quantity is 0:
         return False
     else:
         return insertPortfolio(info)
@@ -93,3 +97,10 @@ def portfolio(ticker,quantity,type):
         else:
             return addPortfolio(ticker,quantity)
 
+# print getYahooPrices('AGG')
+
+with open('data') as data_file:
+    data = json.load(data_file)
+
+for key in data['riskData']['scenariosInfo']:
+    print key + '|' + data['riskData']['scenariosInfo'][key]['description']
