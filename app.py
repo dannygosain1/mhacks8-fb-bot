@@ -119,7 +119,7 @@ def webhook():
                     message_text = str(messaging_event["message"]["text"]).upper()  # the message's text
 
                     if message_text.split()[0] in ["ANALYSIS", "PORTFOLIO", "HELP"]:
-                        if message_text == "ANALYSIS":
+                        if message_text.split()[0] == "ANALYSIS":
                             log("hellooooo")
                             if message_text.split()[1] and message_text.split()[2] and message_text.split()[3]:
                                 scenario = message_text.split()[1].upper()
