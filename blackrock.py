@@ -33,7 +33,7 @@ def getStockInfo(data):
             try:
                 info[key] = element[key]
             except Exception as e:
-                log(traceback.print_exc())
+                app.log(traceback.print_exc())
                 pass
     return info
 
