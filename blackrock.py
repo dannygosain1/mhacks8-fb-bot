@@ -134,6 +134,10 @@ def getRiskData(data,field):
     # field: riskEquity, riskFixedIncome
     return getAnalysisResult(data, 'riskData')['riskFactorsMap'][field]['standalone']
 
+def getAnalyticsGraph (data):
+   # field: effectiveDuration, returnOnAssets
+   return getAnalysisResult(data, 'riskData')['scenarios']
+
 def analyzePortfolio(scenario,type,field):
     positions = getPositionString()
     scenarioString = getScenarioString(scenario)
@@ -146,6 +150,8 @@ def analyzePortfolio(scenario,type,field):
         return getReturns(data,field)
     elif (type == 'ANALYTICS'):
         return getAnalyticsMap(data,field)
+    elif(type == 'GRAPH'):
+        return getAnalyticsGraph(data)
     return ''
 
 def portfolio(ticker,quantity,type,senderID):

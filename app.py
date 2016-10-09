@@ -5,10 +5,12 @@ import requests
 import blackrock
 import traceback
 import simplejson
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_pymongo import PyMongo
 from bson.json_util import dumps
 
+
+graphscenario = ''
 # Create Flask App
 app = Flask(__name__)
 
@@ -34,6 +36,7 @@ def get_response_from_luis_api(query):
 # Get Scenario
 def get_scenario(scenario):
     scenario_dict = {"2008 CRASH": "HIST_20081102_20080911", "2011 CRASH": "HIST_20110919_20110720"}
+    graphscenario = scenario_dict[scenario]
     return scenario_dict[scenario]
 
 # Send help message to user
@@ -201,6 +204,7 @@ def webhook():
                                     try:
                                         result = blackrock.analyzePortfolio(scenario, type, field)
                                         send_message(sender_id, str(result))
+                                        send_message(sender_id, "http://localhost:5000/render")
                                     except Exception as e:
                                         send_message(sender_id, "Something went wrong :( Please try again!")
                                         log(traceback.print_exc())
@@ -252,7 +256,7 @@ def send_message(recipient_id, message_text):
 
 @app.route('/Graph')
 def Graph():
-   temp = blackrock.analyzePortfolio('','GRAPH','')
+   temp = blackrock.analyzePortfolio(graphscenario,'GRAPH','')
    chart = {"type": 'bar',"zoomType": 'xy'}
    series = [{"name": 'Scenario Values', "data": [x['scenarioValue'] for x in temp]}]
    title = {"text": 'Risk value associated with each scenario'}
@@ -264,7 +268,7 @@ def Graph():
 @app.route('/render')
 def render():
    return render_template('graph.html')
-   
+
 def log(message):  # simple wrapper for logging to stdout on heroku
     print str(message)
     sys.stdout.flush()
