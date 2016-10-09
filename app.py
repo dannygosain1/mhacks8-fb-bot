@@ -5,10 +5,7 @@ import requests
 import simplejson
 from flask import Flask, request
 from flask_pymongo import PyMongo
-# from bson import ObjectId
-# from bson import json_util
-# from bson.json_util import dumps
-# import ast
+from bson.json_util import dumps
 
 # Create Flask App
 app = Flask(__name__)
@@ -38,7 +35,7 @@ def send_greeting_message(sender_id):
 
 # Send existing portfolio to user
 def send_portfolio(sender_id):
-    portfolio = mongo.db.portfolio.find( {} )
+    portfolio = dumps(mongo.db.portfolio.find( {} ))
     send_message(sender_id, portfolio)
 
 @app.route('/')
@@ -53,7 +50,11 @@ def verify():
 
 @app.route('/test', methods=['GET'])
 def test():
-    mongo.db.portfolio.insert({ "name": "sadu" })
+    portfolio = mongo.db.portfolio.find( {} )
+    log(portfolio)
+    log("hello")
+    log(dumps(portfolio))
+
     return "Hello world test", 200
 
 @app.route('/', methods=['POST'])
