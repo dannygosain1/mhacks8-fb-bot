@@ -183,13 +183,11 @@ def webhook():
                                     params = luis_response["intents"][0]["actions"][0]["parameters"]
                                     for param in params:
 
-                                        log(param)
-
                                         if param["name"].upper() in ["API_VAR", "RISK_VAR"] and param["value"] is not None:
                                             param_dict[param["name"]] = ''.join(x for x in str(param["value"][0]["entity"]).title() if not x.isspace())
                                             param_dict[param["name"]] = param_dict[param["name"]][0].lower() + param_dict[param["name"]][1:]
 
-                                            log(param_dict)
+                                        log(param_dict)
 
                                         # if len(param_dict) == 1:
                                         #     scenario = message_text.split()[1].upper()
