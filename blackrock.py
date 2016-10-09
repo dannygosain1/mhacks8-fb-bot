@@ -111,7 +111,8 @@ def portfolio(ticker,quantity,type,senderID):
     else:
         tickers = [x['ticker'] for x in oldPortfolio]
         if ticker in tickers:
-            return updatePortfolio(oldPortfolio['ticker'],ticker,quantity,senderID)
+            val = [x for x in oldPortfolio if x['ticker'] is ticker]
+            return updatePortfolio(val[0],ticker,quantity,senderID)
         else:
             return addPortfolio(ticker,quantity,senderID)
 
