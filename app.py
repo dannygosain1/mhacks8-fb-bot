@@ -115,7 +115,7 @@ def webhook():
                     elif message_text.split()[0] == "PORTFOLIO":
                         if message_text.split()[1] == "SHOW":
                             send_portfolio(sender_id)
-                        elif message_text.split()[1] in ["BUY, SELL"] and len(message_text.split()) == 4:
+                        elif message_text.split()[1] in ["BUY", "SELL"] and len(message_text.split()) == 4:
                             ticker = message_text.split()[2]
                             qty = message_text.split()[3]
                             blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id)
