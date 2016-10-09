@@ -119,11 +119,11 @@ def webhook():
                             ticker = message_text.split()[2]
                             qty = message_text.split()[3]
 
-                            # try:
-                            #     blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id)
-                            # except Exception:
-                            #     send_message(sender_id, "Something went wrong :( Please try again!")
-                            #     pass
+                            try:
+                                blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id)
+                            except Exception:
+                                send_message(sender_id, "Something went wrong :( Please try again!")
+                                pass
       
                     elif message_text == "HELP":
                         send_help_message(sender_id)
