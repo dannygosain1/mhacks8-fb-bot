@@ -68,7 +68,7 @@ def getPortfolio():
 
 def updatePortfolio(data,ticker,quantity,senderID):
     data['quantity'] = data['quantity'] + quantity
-    prices = getYahooPrices(ticker)
+    prices = [100]
     data['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
     if quantity is not 0:
         updatePortfolioDB(data,senderID)
