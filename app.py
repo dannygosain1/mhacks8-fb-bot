@@ -32,8 +32,9 @@ def get_response_from_luis_api(query):
     app_id = "307094a8-2412-411c-ab55-a431c9b2dd0c"
     subscription_key = "280d1db7507743198e85cdedcb8c94ce"
     log(build_luis_url(base_url, app_id, subscription_key, query))
-    r = requests.get(build_luis_url(base_url, app_id, subscription_key, query)).json()
+    r = json.loads(requests.get(build_luis_url(base_url, app_id, subscription_key, query)).text)
     log(r)
+    return r
 
 
 # Send help message to user
@@ -125,7 +126,7 @@ def webhook():
 
                     # 
 
-                    luis_response = json.loads(get_response_from_luis_api(message_text))
+                    luis_response = get_response_from_luis_api(message_text)
                     # expected_intent = luis_response["intents"][0]["intent"]
                     log(luis_response)
                     log(luis_response["intents"])
