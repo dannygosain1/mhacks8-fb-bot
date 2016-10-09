@@ -34,7 +34,7 @@ def get_response_from_luis_api(query):
 # Get Scenario
 def get_scenario(scenario):
     scenario_dict = {"2008 CRASH": "HIST_20081102_20080911", "2011 CRASH": "HIST_20110919_20110720"}
-    return scenario_dict["scenario"]
+    return scenario_dict[scenario]
 
 # Send help message to user
 def send_help_message(sender_id):
