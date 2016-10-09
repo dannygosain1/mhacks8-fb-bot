@@ -19,9 +19,6 @@ app.config['MONGO_URI'] = 'mongodb://mhacks8:mhacks8@ds053216.mlab.com:53216/por
 # Create Database Object
 mongo = PyMongo(app)
 
-# LUIS Params
-base_luis_url = "https://api.projectoxford.ai/luis/v1/application?id=307094a8-2412-411c-ab55-a431c9b2dd0c&subscription-key=280d1db7507743198e85cdedcb8c94ce&q="
-
 # Build LUIS URL
 def build_luis_url(base_url, app_id, subscription_key, query):
     return (base_url + "id=%s" + "&subscription-key=%s" + "&q=%s") % (app_id, subscription_key, query)
@@ -32,10 +29,12 @@ def get_response_from_luis_api(query):
     app_id = "307094a8-2412-411c-ab55-a431c9b2dd0c"
     subscription_key = "280d1db7507743198e85cdedcb8c94ce"
     log(build_luis_url(base_url, app_id, subscription_key, query))
-    r = json.loads(requests.get(build_luis_url(base_url, app_id, subscription_key, query)).text)
-    log(r)
-    return r
+    return (json.loads(requests.get(build_luis_url(base_url, app_id, subscription_key, query)).text))
 
+# Get Scenario
+def get_scenario(scenario):
+    scenario_dict = {"2008 CRASH": "HIST_20081102_20080911", "2011 CRASH": "HIST_20110919_20110720"}
+    return scenario_dict["scenario"]
 
 # Send help message to user
 def send_help_message(sender_id):
@@ -188,7 +187,7 @@ def webhook():
                                             param_dict[param["name"]] = param_dict[param["name"]][0].lower() + param_dict[param["name"]][1:]
 
                                         if param["name"].upper() == "EVENT_VAR":
-                                            scenario = str(param["value"][0]["entity"]).upper()
+                                            scenario = get_scenario(str(param["value"][0]["entity"]).upper())
 
                                         if len(param_dict) == 1:
 
