@@ -126,7 +126,7 @@ def webhook():
                     luis_response = get_response_from_luis_api(message_text)
                     expected_intent = luis_response["intents"][0]["intent"]
 
-                    if luis_response["intents"][0]["actions"]["parameters"]:
+                    if luis_response["intents"][0]["actions"][0]["parameters"]:
                         param_dict = {}
                         params = luis_response["intents"][0]["actions"]["parameters"]
                         for param in params:
