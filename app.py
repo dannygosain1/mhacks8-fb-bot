@@ -250,6 +250,21 @@ def send_message(recipient_id, message_text):
         log(r.text)
 
 
+@app.route('/Graph')
+def Graph():
+   temp = blackrock.analyzePortfolio('','GRAPH','')
+   chart = {"type": 'bar',"zoomType": 'xy'}
+   series = [{"name": 'Scenario Values', "data": [x['scenarioValue'] for x in temp]}]
+   title = {"text": 'Risk value associated with each scenario'}
+   xAxis = {"categories": [x['title'] for x in temp]}
+   yAxis = {"title": {"text": 'Risk'}}
+   obj = {'chart':chart,'series':series,'title':title,'xAxis':xAxis,'yAxis':yAxis}
+   return json.dumps(obj)
+
+@app.route('/render')
+def render():
+   return render_template('graph.html')
+   
 def log(message):  # simple wrapper for logging to stdout on heroku
     print str(message)
     sys.stdout.flush()
