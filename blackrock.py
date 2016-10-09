@@ -47,10 +47,10 @@ def getAnalysisURL (positions,scenario):
     # &riskFreeRatePortfolio=LTBILL1-3M&
 
     if scenario == '':
-        return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExposures=true&' \
+        return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?apiVersion=1&calculateExposures=true&' \
                'calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + '&useCache=true'
     else:
-        return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?betaPortfolios = SNP500&calculateExposures=true' \
+        return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?apiVersion=1&betaPortfolios = SNP500&calculateExposures=true' \
            '&calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + \
            '&riskFreeRatePortfolio = LTBILL1 - 3M&scenarios=' + scenario + '&useCache=true'
 
@@ -132,7 +132,7 @@ def getReturns(data,field):
 
 def getRiskData(data,field):
     # field: riskEquity, riskFixedIncome
-    return getAnalysisResult(data, 'riskData')['riskFactorsMap'][field]['standalone']
+    return getAnalysisResult(data, 'riskData')['riskFactorsMap'][field]['riskTotal']['standalone']
 
 def analyzePortfolio(scenario,type,field):
     positions = getPositionString()
