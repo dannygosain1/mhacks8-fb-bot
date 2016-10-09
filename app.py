@@ -55,7 +55,7 @@ def get_portfolio():
 # Insert into db
 def send_create_message(sender_id, data):
     mongo.db.portfolio.insert( data )
-    send_message(sender_id, "Positions successfully updated!")
+    send_message(sender_id, "Positions successfully updated :)")
 
 # Update db
 def send_update_message(sender_id, data):
@@ -69,7 +69,7 @@ def send_update_message(sender_id, data):
 def send_delete_message(sender_id, data):
     record = mongo.db.portfolio.find_one( {"ticker": data["ticker"]} )
     mongo.db.portfolio.remove(record)
-    send_message(sender_id, "Positions successfully updated!")
+    send_message(sender_id, "Positions successfully updated :)")
 
 @app.route('/')
 def verify():
@@ -118,8 +118,12 @@ def webhook():
                         elif message_text.split()[1] in ["BUY", "SELL"] and len(message_text.split()) == 4:
                             ticker = message_text.split()[2]
                             qty = message_text.split()[3]
-                            if not blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id):
-                                send_message(sender_id, "I believe you got the ticker wrong!")
+
+                            # try:
+                            #     blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id)
+                            # except Exception:
+                            #     send_message(sender_id, "Something went wrong :( Please try again!")
+                            #     pass
       
                     elif message_text == "HELP":
                         send_help_message(sender_id)
