@@ -67,7 +67,7 @@ def getPortfolio():
     return tempjson
 
 def updatePortfolio(data,ticker,quantity,senderID):
-    data['quantity'] = int(data['quantity']) + int(quantity)
+    data['quantity'] = int(str(data['quantity'])) + int(str(quantity))
     prices = getYahooPrices(ticker)
     data['price'] = float(prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)])
     if quantity is not 0:
@@ -89,7 +89,7 @@ def addPortfolio(ticker,quantity,senderID):
     url = getSearchURL(ticker)
     data = getResponseData(url)
     info = getStockInfo(data)
-    if not info or quantity is 0:
+    if not info or quantity == 0:
         return False
     else:
         info['quantity'] = int(quantity)
@@ -103,7 +103,8 @@ def analyzePortfolio(scenario, senderID):
     data = getResponseData(url)
 
 def portfolio(ticker,quantity,type,senderID):
-    if type is 'SELL':
+    quantity = int(str(quantity))
+    if type == 'SELL':
         quantity = -quantity
     oldPortfolio = getPortfolio()
     if not oldPortfolio:
