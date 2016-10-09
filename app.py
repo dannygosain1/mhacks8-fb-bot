@@ -166,7 +166,7 @@ def webhook():
                         elif expected_intent == "riskAnalysis":
                             pass # for now
                         else:
-                            send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the default operations!))
+                            send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the default operations!")
                             send_help_message(sender_id)
 
 
