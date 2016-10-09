@@ -67,9 +67,9 @@ def getPortfolio():
     return tempjson
 
 def updatePortfolio(data,ticker,quantity,senderID):
-    data['quantity'] = data['quantity'] + quantity
+    data['quantity'] = int(data['quantity']) + int(quantity)
     prices = getYahooPrices(ticker)
-    data['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
+    data['price'] = float(prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)])
     if quantity is not 0:
         updatePortfolioDB(data,senderID)
     else:
@@ -92,9 +92,9 @@ def addPortfolio(ticker,quantity,senderID):
     if not info or quantity is 0:
         return False
     else:
-        info['quantity'] = quantity
+        info['quantity'] = int(quantity)
         prices = getYahooPrices(ticker)
-        info['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
+        info['price'] = float(prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)])
         return insertPortfolioDB(info,senderID)
 
 def analyzePortfolio(scenario, senderID):
@@ -109,13 +109,17 @@ def portfolio(ticker,quantity,type,senderID):
     if not oldPortfolio:
         return addPortfolio(ticker,quantity,senderID)
     else:
-        tickers = [x['ticker'] for x in oldPortfolio]
+        print oldPortfolio
+        tickers = [str(x['ticker']) for x in oldPortfolio]
         if ticker in tickers:
-            val = [x for x in oldPortfolio if x['ticker'] is ticker]
-            return updatePortfolio(val[0],ticker,quantity,senderID)
+            for y in oldPortfolio:
+                if str(y['ticker']) == ticker:
+                    print y
+                    return updatePortfolio(y,ticker,quantity,senderID)
         else:
             return addPortfolio(ticker,quantity,senderID)
 
+# portfolio('GOOG',10,'BUY',10)
 # print getYahooPrices('AGG')
 
 # with open('data') as data_file:
