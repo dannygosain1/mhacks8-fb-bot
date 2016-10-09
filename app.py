@@ -98,9 +98,6 @@ def verify():
 @app.route('/test', methods=['POST'])
 def test():
     data = request.json
-
-    
-
     mongo.db.portfolio.insert( data )
 
 @app.route('/', methods=['POST'])
@@ -127,11 +124,24 @@ def webhook():
                     # 
 
                     luis_response = get_response_from_luis_api(message_text)
-                    # expected_intent = luis_response["intents"][0]["intent"]
-                    log(luis_response)
-                    log(luis_response["intents"])
-                    log("hellooo")
-                    log(luis_response["intents"][0])
+                    expected_intent = luis_response["intents"][0]["intent"]
+
+                    if luis_response["intents"][0]["actions"]["parameters"]:
+                        param_dict = {}
+                        params = luis_response["intents"][0]["actions"]["parameters"]
+                        for param in params:
+                            if param["name"].upper() in ["QUANTITY", "TICKER", "TRADE_TYPE"] and param["value"][0]["entity"]:
+                                param_dict[param["name"]] = param["value"][0]["entity"]
+
+                            log(param_dict)
+
+                            if len(param_dict) == 3:
+                                try:
+                                blackrock.portfolio(param_dict["ticker"], param_dict["quantity"], param_dict["trade_type"], sender_id)
+                            except Exception as e:
+                                send_message(sender_id, "Something went wrong :( Please try again!")
+                                log(traceback.print_exc())
+                                pass
 
 
 
