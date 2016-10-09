@@ -132,7 +132,7 @@ def getReturns(data,field):
 
 def getRiskData(data,field):
     # field: riskEquity, riskFixedIncome
-    return getAnalysisResult(data, 'riskData')['riskByAssetClass'][field]['riskTotal']['standalone']
+    return getAnalysisResult(data, 'riskData')['riskFactorsMap'][field]['standalone']
 
 def analyzePortfolio(scenario,type,field):
     positions = getPositionString()
