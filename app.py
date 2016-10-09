@@ -32,6 +32,8 @@ def get_response_from_luis_api(query):
     app_id = "307094a8-2412-411c-ab55-a431c9b2dd0c"
     subscription_key = "280d1db7507743198e85cdedcb8c94ce"
     log(build_luis_url(base_url, app_id, subscription_key, query))
+    r = requests.get(build_luis_url(base_url, app_id, subscription_key, query)).json()
+    log(r)
 
 
 # Send help message to user
