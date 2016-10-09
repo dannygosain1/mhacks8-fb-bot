@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import requests
+import blackrock
 import simplejson
 from flask import Flask, request
 from flask_pymongo import PyMongo
@@ -22,8 +23,8 @@ def send_help_message(sender_id):
     help_message = ("Usage: [option] ... [argument] ... [params]\n\n"
                     "Options and arguments:\n"  
                     "portfolio [show]: display contents of exisiting protfolio\n" 
-                    "portfolio [buy|sell] [security] [qty]: update exisiting protfolio\n" 
-                    "analysis [|]: analyze portfolio risk\n"
+                    "portfolio [buy|sell] [ticker] [qty]: update exisiting protfolio\n" 
+                    "analysis [scenario]: analyze portfolio risk\n"
                     "help: show this menu")
     send_message(sender_id, help_message)
 
@@ -37,6 +38,24 @@ def send_greeting_message(sender_id):
 def send_portfolio(sender_id):
     portfolio = dumps(mongo.db.portfolio.find( {},{'_id': False} ))
     send_message(sender_id, portfolio)
+
+# Get existing portfolio
+def get_portfolio():
+    portfolio = dumps(mongo.db.portfolio.find( {},{'_id': False} ))
+    return json.loads(portfolio)
+
+
+def send_create_message(sender_id, data):
+    mongo.db.portfolio.insert( {json.dumps(data)} )
+    send_message(sender_id, "Positions successfully updated!")
+
+
+def send_update_message(sender_id, data):
+    record = mongo.db.portfolio.find_one( {ticker: data["ticker"]} )
+    record["quantity"] = data["quantity"]
+    record["price"] = data["price"]
+    portfolio.save(record)
+    send_message(sender_id, "Positions successfully updated!")
 
 @app.route('/')
 def verify():
@@ -80,17 +99,17 @@ def webhook():
 
                     if message_text == "ANALYSIS":
                         pass
-                    elif message_text == "PORTFOLIO SHOW":
-                        send_portfolio(sender_id)
-                    elif message_text == "PORTFOLIO BUY":
-                        send_buy_success_message(sender_id)
-                    elif message_text == "PORTFOLIO SELL":
-                        pass
+                    elif message_text.split()[0] == "PORTFOLIO":
+                        if message_text.split()[1] == "SHOW":
+                            send_portfolio(sender_id)
+                        elif message_text.split()[1] in ["BUY, SELL"] and len(message_text.split()) == 4:
+                            ticker = message_text.split()[2]
+                            qty = message_text.split()[3]
+                            blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id)
                     elif message_text == "HELP":
                         send_help_message(sender_id)
                     else:
                         send_greeting_message(sender_id)
-
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
