@@ -125,10 +125,11 @@ def webhook():
 
                     # 
 
-                    luis_response = get_response_from_luis_api(message_text)
+                    luis_response = json.loads(get_response_from_luis_api(message_text))
                     # expected_intent = luis_response["intents"][0]["intent"]
                     log(luis_response)
                     log(luis_response["intents"])
+                    log("hellooo")
                     log(luis_response["intents"][0])
 
 
