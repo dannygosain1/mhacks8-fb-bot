@@ -111,6 +111,7 @@ def portfolio(ticker,quantity,type,senderID):
     else:
         tickers = [str(x['ticker']) for x in oldPortfolio]
         app.log("helllloooooo")
+        app.log(ticker)
         app.log(tickers)
         if ticker in tickers:
             for y in oldPortfolio:
