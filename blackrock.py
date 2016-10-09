@@ -1,5 +1,6 @@
 import requests
 import json
+import traceback
 import ystockquote
 import random
 import app
@@ -29,7 +30,11 @@ def getStockInfo(data):
     element = data['resultMap']['SECURITY'][-1]
     if element['success'] is True:
         for key in fields:
-            info[key] = element[key]
+            try:
+                info[key] = element[key]
+            except Exception as e:
+                log(traceback.print_exc())
+                pass
     return info
 
 def getSearchURL(ticker):
