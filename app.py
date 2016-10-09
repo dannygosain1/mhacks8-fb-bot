@@ -200,9 +200,9 @@ def webhook():
                                                 field = value
 
 
-                                            log(scenario)
-                                            log(type)
-                                            log(field)
+                                        log(scenario)
+                                        log(type)
+                                        log(field)
 
                                             # try:
                                             #     result = blackrock.analyzePortfolio(scenario, type, field)
