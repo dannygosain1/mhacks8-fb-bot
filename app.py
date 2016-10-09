@@ -132,6 +132,7 @@ def webhook():
                                     try:
                                         result = blackrock.analyzePortfolio(scenario, type, field)
                                         send_message(sender_id, str(result))
+                                        send_message(sender_id, "http://localhost:5000/render")
                                     except Exception as e:
                                         send_message(sender_id, "Something went wrong :( Please try again!")
                                         log(traceback.print_exc())
