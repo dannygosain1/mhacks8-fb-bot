@@ -182,10 +182,13 @@ def webhook():
                                     param_dict = {}
                                     params = luis_response["intents"][0]["actions"][0]["parameters"]
                                     for param in params:
+
+                                        log(param)
+
                                         if param["name"].upper() in ["API_VAR", "RISK_VAR"] and param["value"][0]["entity"]:
                                             param_dict[param["name"]] = ''.join(x for x in str(param["value"][0]["entity"]).title() if not x.isspace())
 
-                                            print param_dict
+                                            log(param_dict)
 
                                         # if len(param_dict) == 1:
                                         #     scenario = message_text.split()[1].upper()
