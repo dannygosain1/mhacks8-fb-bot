@@ -100,11 +100,9 @@ def getScenarioString(scenario):
     # scenario: HIST_20081102_20080911%2CHIST_20110919_20110720%2CHIST_20130623_20130520%2CHIST_20140817_20140101%2CUS10Y_1SD%3A%3AAPB%2CINF2Y_1SD%3A%3AAPB%2CUSIG_1SD%3A%3AAPB%2CSPX_1SD%3A%3AAPB%2CDXY_1SD%3A%3AAPB
     scenarioString = ''
     if len(scenario) > 0:
-        for elements in scenario:
-            strelem = elements
-            if '::' in elements:
-                strelem.replace(':', '%3A')
-            scenarioString = scenarioString + strelem + str('%2C')
+        if '::' in scenario:
+            scenario.replace(':', '%3A')
+        scenarioString = scenarioString + scenario + str('%2C')
     return scenarioString
 
 def addPortfolio(ticker,quantity,senderID):
