@@ -95,7 +95,7 @@ def verify():
         return request.args["hub.challenge"], 200
     return "Hello world", 200
 
-@app.route('/test', methods=['POST'])
+@app.route('/test')
 def test():
     data = request.json
     mongo.db.portfolio.insert( data )

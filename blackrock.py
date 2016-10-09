@@ -38,9 +38,15 @@ def getSearchURL(ticker):
 def getAnalysisURL (positions,scenario):
     # positions: AAPL~25%7CVWO~25%7CAGG~25%7CMALOX~25%7C
     # scenario: HIST_20081102_20080911%2CHIST_20110919_20110720%2CHIST_20130623_20130520%2CHIST_20140817_20140101%2CUS10Y_1SD%3A%3AAPB%2CINF2Y_1SD%3A%3AAPB%2CUSIG_1SD%3A%3AAPB%2CSPX_1SD%3A%3AAPB%2CDXY_1SD%3A%3AAPB
-    return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?betaPortfolios=SNP500&calculateExposures=true&' \
+    # betaPortfolios=SNP500&
+    # &riskFreeRatePortfolio=LTBILL1-3M&
+
+    if scenario == '':
+        return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExposures=true&' \
+               'calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + '&useCache=true'
+    else:
+        return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExposures=true&' \
            'calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + \
-           '&riskFreeRatePortfolio=LTBILL1-3M&' \
            'scenarios=' + scenario + '&useCache=true'
 
 def getYahooPrices(ticker):
@@ -80,10 +86,21 @@ def getPositionString():
     # positions: AAPL~25%7CVWO~25%7CAGG~25%7CMALOX~25%7C
     portfolio = getPortfolio()
     positions = ''
-    totalMV = [x['price']*x['quantity'] for x in portfolio]
+    totalMV = sum([x['price']*x['quantity'] for x in portfolio])
     for elements in portfolio:
-        positions = positions + elements['ticker'] + '~' + str(round(elements['price']*elements['quantity']/totalMV,1)) + str('%7C')
+        positions = positions + elements['ticker'] + '~' + str(round(elements['price']*elements['quantity']*100/totalMV,1)) + str('%7C')
     return positions
+
+def getScenarioString(scenario):
+    # scenario: HIST_20081102_20080911%2CHIST_20110919_20110720%2CHIST_20130623_20130520%2CHIST_20140817_20140101%2CUS10Y_1SD%3A%3AAPB%2CINF2Y_1SD%3A%3AAPB%2CUSIG_1SD%3A%3AAPB%2CSPX_1SD%3A%3AAPB%2CDXY_1SD%3A%3AAPB
+    scenarioString = ''
+    if len(scenario) > 0:
+        for elements in scenario:
+            strelem = elements
+            if '::' in elements:
+                strelem.replace(':', '%3A')
+            scenarioString = scenarioString + strelem + str('%2C')
+    return scenarioString
 
 def addPortfolio(ticker,quantity,senderID):
     url = getSearchURL(ticker)
@@ -97,10 +114,37 @@ def addPortfolio(ticker,quantity,senderID):
         info['price'] = float(prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)])
         return insertPortfolioDB(info,senderID)
 
-def analyzePortfolio(scenario, senderID):
+def getAnalysisResult(data, type):
+    return data['resultMap']['PORTFOLIOS'][0]['portfolios'][0][type]
+
+def getAnalyticsMap (data,field):
+    # field: effectiveDuration, returnOnAssets
+    return getAnalysisResult(data,'analyticsMap')[field]['value']
+
+def getReturns(data,field):
+    # field: capitalGainReturnY1, grossReturnY10, rnrRiskRatingOverall
+    # return getAnalysisResult(data,'returns')['weightedAveragePerformance'][field]
+    # field: twoYearRisk, oneYearAnnualized
+    return getAnalysisResult(data, 'returns')['latestPerf'][field]
+
+def getRiskData(data,field):
+    # field: riskEquity, riskFixedIncome
+    return getAnalysisResult(data, 'riskData')['riskFactorsMap'][field]['standalone']
+
+def analyzePortfolio(scenario,type,field,senderID):
     positions = getPositionString()
-    url = getAnalysisURL(positions,scenario)
+    scenarioString = getScenarioString(scenario)
+    url = getAnalysisURL(positions,scenarioString)
+    print url
     data = getResponseData(url)
+    return data
+    # if (type == 'RISK'):
+    #     return getRiskData(data,field)
+    # elif (type == 'RETURNS'):
+    #     return getReturns(data,field)
+    # elif (type == 'ANALYTICS'):
+    #     return getAnalyticsMap(data,field)
+    # return ''
 
 def portfolio(ticker,quantity,type,senderID):
     quantity = int(str(quantity))
