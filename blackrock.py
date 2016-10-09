@@ -93,7 +93,7 @@ def addPortfolio(ticker,quantity,senderID):
     if not info or quantity is 0:
         return False
     else:
-        prices = getYahooPrices(ticker)
+        prices = [100]
         info['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
         return insertPortfolioDB(info,senderID)
 
