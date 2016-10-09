@@ -142,16 +142,12 @@ def analyzePortfolio(scenario,type,field):
     url = getAnalysisURL(positions,scenarioString)
     print url
     data = getResponseData(url)
-    try:
-        if (type == 'RISK'):
-            return getRiskData(data,field)
-        elif (type == 'RETURNS'):
-            return getReturns(data,field)
-        elif (type == 'ANALYTICS'):
-            return getAnalyticsMap(data,field)
-    except Exception as e:
-        app.log(traceback.print_exc())
-        pass
+    if (type == 'RISK'):
+        return getRiskData(data,field)
+    elif (type == 'RETURNS'):
+        return getReturns(data,field)
+    elif (type == 'ANALYTICS'):
+        return getAnalyticsMap(data,field)
     return ''
 
 def portfolio(ticker,quantity,type,senderID):
