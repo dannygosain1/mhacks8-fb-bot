@@ -89,10 +89,10 @@ def addPortfolio(ticker,quantity,senderID):
     url = getSearchURL(ticker)
     data = getResponseData(url)
     info = getStockInfo(data)
-    info['quantity'] = quantity
     if not info or quantity is 0:
         return False
     else:
+        info['quantity'] = quantity
         prices = getYahooPrices(ticker)
         info['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
         return insertPortfolioDB(info,senderID)
@@ -109,7 +109,8 @@ def portfolio(ticker,quantity,type,senderID):
     if not oldPortfolio:
         return addPortfolio(ticker,quantity,senderID)
     else:
-        if ticker in list(oldPortfolio['ticker']):
+        tickers = [x['ticker'] for x in oldPortfolio]
+        if ticker in tickers:
             return updatePortfolio(oldPortfolio['ticker'],ticker,quantity,senderID)
         else:
             return addPortfolio(ticker,quantity,senderID)
