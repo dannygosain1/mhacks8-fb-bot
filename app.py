@@ -185,7 +185,7 @@ def webhook():
 
                                         log(param)
 
-                                        if param["name"].upper() in ["API_VAR", "RISK_VAR"] and param["value"][0]["entity"]:
+                                        if param["name"].upper() in ["API_VAR", "RISK_VAR"] and param["value"]:
                                             param_dict[param["name"]] = ''.join(x for x in str(param["value"][0]["entity"]).title() if not x.isspace())
 
                                             log(param_dict)
