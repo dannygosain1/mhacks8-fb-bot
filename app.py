@@ -120,11 +120,10 @@ def webhook():
 
                     if message_text.split()[0] in ["ANALYSIS", "PORTFOLIO", "HELP"]:
                         if message_text.split()[0] == "ANALYSIS":
-                            log("hellooooo")
-                            if message_text.split()[1] and message_text.split()[2] and message_text.split()[3]:
-                                scenario = message_text.split()[1].upper()
-                                type = message_text.split()[2].upper()
-                                field = str(messaging_event["message"]["text"]).split()[3]
+                            # if message_text.split()[1] and message_text.split()[2] and message_text.split()[3]:
+                            #     scenario = message_text.split()[1].upper()
+                            #     type = message_text.split()[2].upper()
+                            #     field = str(messaging_event["message"]["text"]).split()[3]
 
                                 try:
                                     result = blackrock.analyzePortfolio(scenario, type, field)
