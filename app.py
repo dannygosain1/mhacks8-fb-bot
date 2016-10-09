@@ -18,6 +18,14 @@ app.config['MONGO_URI'] = 'mongodb://mhacks8:mhacks8@ds053216.mlab.com:53216/por
 # Create Database Object
 mongo = PyMongo(app)
 
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
+
+
 # Send help message to user
 def send_help_message(sender_id):
     help_message = ("Usage: [option] ... [argument] ... [params]\n\n"
@@ -46,7 +54,7 @@ def get_portfolio():
 
 # Insert into db
 def send_create_message(sender_id, data):
-    mongo.db.portfolio.insert( {json.dumps(data)} )
+    mongo.db.portfolio.insert( data )
     send_message(sender_id, "Positions successfully updated!")
 
 # Update db
@@ -76,7 +84,10 @@ def verify():
 @app.route('/test', methods=['POST'])
 def test():
     data = request.json
-    return mongo.db.portfolio.insert( {data} ), 200
+
+    
+
+    mongo.db.portfolio.insert( data )
 
 @app.route('/', methods=['POST'])
 def webhook():
