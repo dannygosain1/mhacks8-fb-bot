@@ -99,8 +99,8 @@ def portfolio(ticker,quantity,type):
 
 # print getYahooPrices('AGG')
 
-with open('data') as data_file:
-    data = json.load(data_file)
-
-for key in data['riskData']['scenariosInfo']:
-    print key + '|' + data['riskData']['scenariosInfo'][key]['description']
+# with open('data') as data_file:
+#     data = json.load(data_file)
+#
+# for key in data['riskData']['scenariosInfo']:
+#     print key + '|' + data['riskData']['scenariosInfo'][key]['description']
