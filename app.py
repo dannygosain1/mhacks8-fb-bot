@@ -43,7 +43,7 @@ def send_help_message(sender_id):
                     "Options and arguments:\n"  
                     "portfolio [show]: display contents of exisiting protfolio\n" 
                     "portfolio [buy|sell] [ticker] [qty]: update exisiting protfolio\n" 
-                    "analysis [scenario]: analyze portfolio risk\n"
+                    "analysis [scenario] [type] [field]: analyze portfolio risk\n"
                     "help: show this menu")
     get_response_from_luis_api("hello")
     send_message(sender_id, help_message)
@@ -120,7 +120,17 @@ def webhook():
 
                     if message_text.split()[0] in ["ANALYSIS", "PORTFOLIO", "HELP"]:
                         if message_text == "ANALYSIS":
-                            pass
+                            if message_text.split()[1] and message_text.split()[2] and message_text.split()[3]:
+                                scenario = message_text.split()[1].upper()
+                                type = message_text.split()[2].upper()
+                                field = message_text.split()[3]
+                                try:
+                                    result = blackrock.analyzePortfolio(scenario, type, field)
+                                    send_message(sender_id, str(result))
+                                except Exception as e:
+                                    send_message(sender_id, "Something went wrong :( Please try again!")
+                                    log(traceback.print_exc())
+                                    pass
                         elif message_text.split()[0] == "PORTFOLIO":
                             if message_text.split()[1] == "SHOW":
                                 send_portfolio(sender_id)
@@ -129,9 +139,6 @@ def webhook():
                                 qty = message_text.split()[3]
 
                                 try:
-                                    log(ticker)
-                                    log(qty)
-                                    log(message_text.split()[1])
                                     blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id)
                                 except Exception as e:
                                     send_message(sender_id, "Something went wrong :( Please try again!")
@@ -155,8 +162,6 @@ def webhook():
                                 for param in params:
                                     if param["name"].upper() in ["QUANTITY", "TICKER", "TRADE_TYPE"] and param["value"][0]["entity"]:
                                         param_dict[param["name"]] = str(param["value"][0]["entity"]).upper()
-
-                                        log(param_dict)
 
                                     if len(param_dict) == 3:
                                         try:

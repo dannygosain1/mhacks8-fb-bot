@@ -131,20 +131,19 @@ def getRiskData(data,field):
     # field: riskEquity, riskFixedIncome
     return getAnalysisResult(data, 'riskData')['riskFactorsMap'][field]['standalone']
 
-def analyzePortfolio(scenario,type,field,senderID):
+def analyzePortfolio(scenario,type,field):
     positions = getPositionString()
     scenarioString = getScenarioString(scenario)
     url = getAnalysisURL(positions,scenarioString)
     print url
     data = getResponseData(url)
-    return data
-    # if (type == 'RISK'):
-    #     return getRiskData(data,field)
-    # elif (type == 'RETURNS'):
-    #     return getReturns(data,field)
-    # elif (type == 'ANALYTICS'):
-    #     return getAnalyticsMap(data,field)
-    # return ''
+    if (type == 'RISK'):
+        return getRiskData(data,field)
+    elif (type == 'RETURNS'):
+        return getReturns(data,field)
+    elif (type == 'ANALYTICS'):
+        return getAnalyticsMap(data,field)
+    return ''
 
 def portfolio(ticker,quantity,type,senderID):
     quantity = int(str(quantity))
