@@ -127,8 +127,9 @@ def webhook():
 
                     luis_response = get_response_from_luis_api(message_text)
                     expected_intent = luis_response["intents"][0]["intent"]
-                    log(expected_intent)
-
+                    log(luis_response)
+                    log(luis_response["intents"])
+                    log(luis_response["intents"][0])
 
 
 
