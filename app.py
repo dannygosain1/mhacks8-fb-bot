@@ -19,6 +19,21 @@ app.config['MONGO_URI'] = 'mongodb://mhacks8:mhacks8@ds053216.mlab.com:53216/por
 # Create Database Object
 mongo = PyMongo(app)
 
+# LUIS Params
+base_luis_url = "https://api.projectoxford.ai/luis/v1/application?id=307094a8-2412-411c-ab55-a431c9b2dd0c&subscription-key=280d1db7507743198e85cdedcb8c94ce&q="
+
+# Build LUIS URL
+def build_luis_url(base_url, app_id, subscription_key, query):
+    return (base_url + "id=%s" + "&subscription-key=%s" + "&q=%s") % (app_id, subscription_key, query)
+
+# Get Response from the Microsoft LUIS API
+def get_response_from_luis_api(query):
+    base_url = "https://api.projectoxford.ai/luis/v1/application?"
+    app_id = "307094a8-2412-411c-ab55-a431c9b2dd0c"
+    subscription_key = "280d1db7507743198e85cdedcb8c94ce"
+    log(build_luis_url(base_url, app_id, subscription_key, query))
+
+
 # Send help message to user
 def send_help_message(sender_id):
     help_message = ("Usage: [option] ... [argument] ... [params]\n\n"
@@ -27,6 +42,7 @@ def send_help_message(sender_id):
                     "portfolio [buy|sell] [ticker] [qty]: update exisiting protfolio\n" 
                     "analysis [scenario]: analyze portfolio risk\n"
                     "help: show this menu")
+    get_response_from_luis_api("hello")
     send_message(sender_id, help_message)
 
 # Send greeting message to user
