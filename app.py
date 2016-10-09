@@ -44,17 +44,24 @@ def get_portfolio():
     portfolio = dumps(mongo.db.portfolio.find( {},{'_id': False} ))
     return json.loads(portfolio)
 
-
+# Insert into db
 def send_create_message(sender_id, data):
     mongo.db.portfolio.insert( {json.dumps(data)} )
     send_message(sender_id, "Positions successfully updated!")
 
 
+# Update db
 def send_update_message(sender_id, data):
     record = mongo.db.portfolio.find_one( {ticker: data["ticker"]} )
     record["quantity"] = data["quantity"]
     record["price"] = data["price"]
-    portfolio.save(record)
+    mongo.db.portfolio.save(record)
+    send_message(sender_id, "Positions successfully updated!")
+
+# Delete from db
+def send_create_message(sender_id, data):
+    record = mongo.db.portfolio.find_one( {ticker: data["ticker"]} )
+    mongo.db.portfolio.remove(record)
     send_message(sender_id, "Positions successfully updated!")
 
 @app.route('/')
