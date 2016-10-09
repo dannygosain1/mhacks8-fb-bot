@@ -21,7 +21,7 @@ def getResponseData(url):
     return data
 
 def getStockInfo(data):
-    fields = ['ticker', 'description', 'assetClass', 'countryCode', 'cusip', 'currency', 'peRatio', 'gics1Sector']
+    fields = ['ticker', 'description', 'assetClass', 'countryCode', 'cusip', 'currency', 'gics1Sector']
     info = {}
     element = data['resultMap']['SECURITY'][-1]
     if element['success'] is True:
@@ -47,24 +47,26 @@ def getYahooPrices(ticker):
         prices.append(yahoo_data[dates]['Close'])
     return prices
 
-def insertPortfolio(values):
+def insertPortfolio(ticker,senderID):
     return True
 
-def updatePortfolio(data,ticker,quantity):
-    data['quantity'] = data['quantity'] + quantity
-    prices = getYahooPrices(ticker)
-    data['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
-    # if quantity is 0:
-    #     delete
-    # else:
-    #
+def deletePortfolio(ticker,senderID):
     return True
 
 def getPortfolio():
     tempjson = {}
     return tempjson
 
-def createPositionString():
+def updatePortfolio(data,ticker,quantity,senderID):
+    data['quantity'] = data['quantity'] + quantity
+    prices = getYahooPrices(ticker)
+    data['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
+    deletePortfolio(ticker,senderID)
+    if quantity is not 0:
+        insertPortfolio(ticker,senderID)
+    return True
+
+def getPositionString():
     # positions: AAPL~25%7CVWO~25%7CAGG~25%7CMALOX~25%7C
     portfolio = getPortfolio()
     positions = ''
@@ -73,7 +75,7 @@ def createPositionString():
         positions = positions + elements['ticker'] + '~' + str(round(elements['price']*elements['quantity']/totalMV,1)) + str('%7C')
     return positions
 
-def addPortfolio(ticker,quantity):
+def addPortfolio(ticker,quantity,senderID):
     url = getSearchURL(ticker)
     data = getResponseData(url)
     info = getStockInfo(data)
@@ -83,19 +85,24 @@ def addPortfolio(ticker,quantity):
     if not info or quantity is 0:
         return False
     else:
-        return insertPortfolio(info)
+        return insertPortfolio(info,senderID)
 
-def portfolio(ticker,quantity,type):
-    if type is 'sell':
+def analyzePortfolio(scenario, senderID):
+    positions = getPositionString()
+    url = getAnalysisURL(positions,scenario)
+    data = getResponseData(url)
+
+def portfolio(ticker,quantity,type,senderID):
+    if type is 'SELL':
         quantity = -quantity
     oldPortfolio = getPortfolio()
     if not oldPortfolio:
-        return addPortfolio(ticker,quantity)
+        addPortfolio(ticker,quantity,senderID)
     else:
         if ticker in list(oldPortfolio['ticker']):
-            return updatePortfolio(oldPortfolio['ticker'],ticker,quantity)
+            updatePortfolio(oldPortfolio['ticker'],ticker,quantity,senderID)
         else:
-            return addPortfolio(ticker,quantity)
+            addPortfolio(ticker,quantity,senderID)
 
 # print getYahooPrices('AGG')
 

@@ -10,3 +10,4 @@ wsgiref==0.1.2
 simplejson==3.8.2
 flask_pymongo==0.4.1
 bson==0.4.3
+ystockquote==0.2.4
