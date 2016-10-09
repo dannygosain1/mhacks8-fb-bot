@@ -199,18 +199,13 @@ def webhook():
                                                     type = "ANALYTICS"
                                                 field = value
 
-
-                                    log(scenario)
-                                    log(type)
-                                    log(field)
-
-                                    # try:
-                                    #     result = blackrock.analyzePortfolio(scenario, type, field)
-                                    #     send_message(sender_id, str(result))
-                                    # except Exception as e:
-                                    #     send_message(sender_id, "Something went wrong :( Please try again!")
-                                    #     log(traceback.print_exc())
-                                    #     pass
+                                    try:
+                                        result = blackrock.analyzePortfolio(scenario, type, field)
+                                        send_message(sender_id, str(result))
+                                    except Exception as e:
+                                        send_message(sender_id, "Something went wrong :( Please try again!")
+                                        log(traceback.print_exc())
+                                        pass
                             else:
                                 send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the default operations!")
                                 send_help_message(sender_id)
