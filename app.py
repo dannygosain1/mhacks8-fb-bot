@@ -176,17 +176,6 @@ def webhook():
                             send_help_message(sender_id)
 
 
-
-
-
-
-
-                    # 
-
-
-
-
-
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
 
