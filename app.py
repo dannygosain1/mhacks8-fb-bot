@@ -137,7 +137,7 @@ def webhook():
 
                             if len(param_dict) == 3:
                                 try:
-                                blackrock.portfolio(param_dict["ticker"], param_dict["quantity"], param_dict["trade_type"], sender_id)
+                                    blackrock.portfolio(param_dict["ticker"], param_dict["quantity"], param_dict["trade_type"], sender_id)
                             except Exception as e:
                                 send_message(sender_id, "Something went wrong :( Please try again!")
                                 log(traceback.print_exc())
