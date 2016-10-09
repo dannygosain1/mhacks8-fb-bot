@@ -75,7 +75,7 @@ def verify():
 
 @app.route('/test', methods=['POST'])
 def test():
-    data = request.json()
+    data = request.json
     return mongo.db.portfolio.insert( {data} ), 200
 
 @app.route('/', methods=['POST'])
