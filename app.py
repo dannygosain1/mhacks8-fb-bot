@@ -187,25 +187,30 @@ def webhook():
                                             param_dict[param["name"]] = ''.join(x for x in str(param["value"][0]["entity"]).title() if not x.isspace())
                                             param_dict[param["name"]] = param_dict[param["name"]][0].lower() + param_dict[param["name"]][1:]
 
-                                        log(param_dict)
+                                        if param["name"].upper() == "EVENT_VAR":
+                                            scenario = param["name"].upper()
 
-                                        # if len(param_dict) == 1:
-                                        #     scenario = message_text.split()[1].upper()
+                                        if len(param_dict) == 1:
 
-                                        #     if "RISK_VAR" == param_dict["name"]:
-                                        #         type = "RISK"
-                                        #     elif "API_VAR" == param_dict["name"]:
-                                        #         type = "ANALYTICS"
+                                            for key, value in param_dict.iter_values():
+                                                if key.upper() == "RISK_VAR":
+                                                    type = "RISK"
+                                                elif key.upper() == "API_VAR":
+                                                    type = "ANALYTICS"
+                                                field = value
 
-                                        #     field = ''.join(x for x in 'make IT camel CaSe'.title() if not x.isspace())
 
-                                        #     try:
-                                        #         result = blackrock.analyzePortfolio(scenario, type, field)
-                                        #         send_message(sender_id, str(result))
-                                        #     except Exception as e:
-                                        #         send_message(sender_id, "Something went wrong :( Please try again!")
-                                        #         log(traceback.print_exc())
-                                        #         pass
+                                            log(scenario)
+                                            log(type)
+                                            log(field)
+
+                                            # try:
+                                            #     result = blackrock.analyzePortfolio(scenario, type, field)
+                                            #     send_message(sender_id, str(result))
+                                            # except Exception as e:
+                                            #     send_message(sender_id, "Something went wrong :( Please try again!")
+                                            #     log(traceback.print_exc())
+                                            #     pass
                             else:
                                 send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the default operations!")
                                 send_help_message(sender_id)
