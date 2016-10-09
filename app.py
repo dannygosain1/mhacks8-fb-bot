@@ -19,9 +19,6 @@ app.config['MONGO_URI'] = 'mongodb://mhacks8:mhacks8@ds053216.mlab.com:53216/por
 # Create Database Object
 mongo = PyMongo(app)
 
-# LUIS Params
-base_luis_url = "https://api.projectoxford.ai/luis/v1/application?id=307094a8-2412-411c-ab55-a431c9b2dd0c&subscription-key=280d1db7507743198e85cdedcb8c94ce&q="
-
 # Build LUIS URL
 def build_luis_url(base_url, app_id, subscription_key, query):
     return (base_url + "id=%s" + "&subscription-key=%s" + "&q=%s") % (app_id, subscription_key, query)
@@ -32,10 +29,12 @@ def get_response_from_luis_api(query):
     app_id = "307094a8-2412-411c-ab55-a431c9b2dd0c"
     subscription_key = "280d1db7507743198e85cdedcb8c94ce"
     log(build_luis_url(base_url, app_id, subscription_key, query))
-    r = json.loads(requests.get(build_luis_url(base_url, app_id, subscription_key, query)).text)
-    log(r)
-    return r
+    return (json.loads(requests.get(build_luis_url(base_url, app_id, subscription_key, query)).text))
 
+# Get Scenario
+def get_scenario(scenario):
+    scenario_dict = {"2008 CRASH": "HIST_20081102_20080911", "2011 CRASH": "HIST_20110919_20110720"}
+    return scenario_dict[scenario]
 
 # Send help message to user
 def send_help_message(sender_id):
@@ -178,7 +177,34 @@ def webhook():
                             elif expected_intent == "greetings":
                                 send_greeting_message(sender_id)
                             elif expected_intent == "riskAnalysis":
-                                pass # for now
+                                if luis_response["intents"][0]["actions"][0]["parameters"]:
+                                    param_dict = {}
+                                    params = luis_response["intents"][0]["actions"][0]["parameters"]
+                                    for param in params:
+
+                                        if param["name"].upper() in ["API_VAR", "RISK_VAR"] and param["value"] is not None:
+                                            param_dict[param["name"]] = ''.join(x for x in str(param["value"][0]["entity"]).title() if not x.isspace())
+                                            param_dict[param["name"]] = param_dict[param["name"]][0].lower() + param_dict[param["name"]][1:]
+
+                                        if param["name"].upper() == "EVENT_VAR":
+                                            scenario = get_scenario(str(param["value"][0]["entity"]).upper())
+
+                                        if len(param_dict) == 1:
+
+                                            for key, value in param_dict.iteritems():
+                                                if key.upper() == "RISK_VAR":
+                                                    type = "RISK"
+                                                elif key.upper() == "API_VAR":
+                                                    type = "ANALYTICS"
+                                                field = value
+
+                                    try:
+                                        result = blackrock.analyzePortfolio(scenario, type, field)
+                                        send_message(sender_id, str(result))
+                                    except Exception as e:
+                                        send_message(sender_id, "Something went wrong :( Please try again!")
+                                        log(traceback.print_exc())
+                                        pass
                             else:
                                 send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the default operations!")
                                 send_help_message(sender_id)
