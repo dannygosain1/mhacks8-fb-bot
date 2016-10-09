@@ -18,6 +18,14 @@ app.config['MONGO_URI'] = 'mongodb://mhacks8:mhacks8@ds053216.mlab.com:53216/por
 # Create Database Object
 mongo = PyMongo(app)
 
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
+
+
 # Send help message to user
 def send_help_message(sender_id):
     help_message = ("Usage: [option] ... [argument] ... [params]\n\n"
@@ -46,21 +54,20 @@ def get_portfolio():
 
 # Insert into db
 def send_create_message(sender_id, data):
-    mongo.db.portfolio.insert( {json.dumps(data)} )
+    mongo.db.portfolio.insert( data )
     send_message(sender_id, "Positions successfully updated!")
-
 
 # Update db
 def send_update_message(sender_id, data):
-    record = mongo.db.portfolio.find_one( {ticker: data["ticker"]} )
+    record = mongo.db.portfolio.find_one( {"ticker": data["ticker"]} )
     record["quantity"] = data["quantity"]
     record["price"] = data["price"]
     mongo.db.portfolio.save(record)
     send_message(sender_id, "Positions successfully updated!")
 
 # Delete from db
-def send_create_message(sender_id, data):
-    record = mongo.db.portfolio.find_one( {ticker: data["ticker"]} )
+def send_delete_message(sender_id, data):
+    record = mongo.db.portfolio.find_one( {"ticker": data["ticker"]} )
     mongo.db.portfolio.remove(record)
     send_message(sender_id, "Positions successfully updated!")
 
@@ -74,14 +81,13 @@ def verify():
         return request.args["hub.challenge"], 200
     return "Hello world", 200
 
-@app.route('/test', methods=['GET'])
+@app.route('/test', methods=['POST'])
 def test():
-    portfolio = mongo.db.portfolio.find( {} )
-    log(portfolio)
-    log("hello")
-    log(dumps(portfolio))
+    data = request.json
 
-    return "Hello world test", 200
+    
+
+    mongo.db.portfolio.insert( data )
 
 @app.route('/', methods=['POST'])
 def webhook():
@@ -109,7 +115,7 @@ def webhook():
                     elif message_text.split()[0] == "PORTFOLIO":
                         if message_text.split()[1] == "SHOW":
                             send_portfolio(sender_id)
-                        elif message_text.split()[1] in ["BUY, SELL"] and len(message_text.split()) == 4:
+                        elif message_text.split()[1] in ["BUY", "SELL"] and len(message_text.split()) == 4:
                             ticker = message_text.split()[2]
                             qty = message_text.split()[3]
                             blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id)
