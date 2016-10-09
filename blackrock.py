@@ -111,11 +111,11 @@ def portfolio(ticker,quantity,type,senderID):
     else:
         tickers = [str(x['ticker']) for x in oldPortfolio]
         app.log("helllloooooo")
-        app.log(ticker)
+        app.log(str(ticker))
         app.log(tickers)
         if ticker in tickers:
             for y in oldPortfolio:
-                if y['ticker'] is ticker:
+                if str(y['ticker']) == ticker:
                     return updatePortfolio(y,ticker,quantity,senderID)
         else:
             return addPortfolio(ticker,quantity,senderID)
