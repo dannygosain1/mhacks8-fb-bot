@@ -192,7 +192,7 @@ def webhook():
 
                                         if len(param_dict) == 1:
 
-                                            for key, value in param_dict.iter_items():
+                                            for key, value in param_dict.iteritems():
                                                 if key.upper() == "RISK_VAR":
                                                     type = "RISK"
                                                 elif key.upper() == "API_VAR":
