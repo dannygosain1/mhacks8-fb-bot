@@ -2,6 +2,7 @@ import requests
 import json
 import ystockquote
 import random
+import app
 
 # url = 'https://www.blackrock.com/tools/api-tester/hackathon?apiType=searchSecurities&query=GOOG'
 # url = 'https://www.blackrock.com/tools/hackathon/search-securities?query=GOOG&useCache=true'
@@ -47,23 +48,29 @@ def getYahooPrices(ticker):
         prices.append(yahoo_data[dates]['Close'])
     return prices
 
-def insertPortfolio(ticker,senderID):
+def insertPortfolioDB(data,senderID):
+    app.send_create_message(data,senderID)
     return True
 
-def deletePortfolio(ticker,senderID):
+def deletePortfolioDB(ticker,senderID):
+    return True
+
+def updatePortfolioDB(data,senderID):
+    app.send_update_message(data,senderID)
     return True
 
 def getPortfolio():
-    tempjson = {}
+    tempjson = app.get_portfolio()
     return tempjson
 
 def updatePortfolio(data,ticker,quantity,senderID):
     data['quantity'] = data['quantity'] + quantity
     prices = getYahooPrices(ticker)
     data['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
-    deletePortfolio(ticker,senderID)
     if quantity is not 0:
-        insertPortfolio(ticker,senderID)
+        updatePortfolioDB(data,senderID)
+    else:
+        deletePortfolioDB(ticker, senderID)
     return True
 
 def getPositionString():
@@ -85,7 +92,7 @@ def addPortfolio(ticker,quantity,senderID):
     if not info or quantity is 0:
         return False
     else:
-        return insertPortfolio(info,senderID)
+        return insertPortfolioDB(info,senderID)
 
 def analyzePortfolio(scenario, senderID):
     positions = getPositionString()
