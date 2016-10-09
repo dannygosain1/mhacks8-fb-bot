@@ -68,7 +68,7 @@ def getPortfolio():
 
 def updatePortfolio(data,ticker,quantity,senderID):
     data['quantity'] = data['quantity'] + quantity
-    prices = [100]
+    prices = [100, 101, 102]
     data['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
     if quantity is not 0:
         updatePortfolioDB(data,senderID)
@@ -93,7 +93,7 @@ def addPortfolio(ticker,quantity,senderID):
     if not info or quantity is 0:
         return False
     else:
-        prices = [100]
+        prices = [100, 101, 102]
         info['price'] = prices[random.randrange(0, len(prices) - 1) % (len(prices) - 1)]
         return insertPortfolioDB(info,senderID)
 
