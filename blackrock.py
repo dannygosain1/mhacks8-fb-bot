@@ -48,11 +48,11 @@ def getAnalysisURL (positions,scenario):
 
     if scenario == '':
         return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?apiVersion=1&calculateExposures=true&' \
-               'calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + '&useCache=true'
+               'calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + '&useCache=false'
     else:
         return 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?apiVersion=1&betaPortfolios = SNP500&calculateExposures=true' \
            '&calculatePerformance=true&calculateRisk=true&calculateStressTests=true&positions=' + positions + \
-           '&riskFreeRatePortfolio = LTBILL1 - 3M&scenarios=' + scenario + '&useCache=true'
+           '&riskFreeRatePortfolio = LTBILL1 - 3M&scenarios=' + scenario + '&useCache=false'
 
 def getYahooPrices(ticker):
     prices = []
