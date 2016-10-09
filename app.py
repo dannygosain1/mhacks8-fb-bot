@@ -3,6 +3,7 @@ import sys
 import json
 import requests
 import blackrock
+import traceback
 import simplejson
 from flask import Flask, request
 from flask_pymongo import PyMongo
@@ -17,14 +18,6 @@ app.config['MONGO_URI'] = 'mongodb://mhacks8:mhacks8@ds053216.mlab.com:53216/por
 
 # Create Database Object
 mongo = PyMongo(app)
-
-
-class JSONEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, ObjectId):
-            return str(o)
-        return json.JSONEncoder.default(self, o)
-
 
 # Send help message to user
 def send_help_message(sender_id):
@@ -123,7 +116,7 @@ def webhook():
                                 blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id)
                             except Exception as e:
                                 send_message(sender_id, "Something went wrong :( Please try again!")
-                                log(e)
+                                log(traceback.print_exc())
                                 pass
       
                     elif message_text == "HELP":
