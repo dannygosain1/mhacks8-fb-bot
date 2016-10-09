@@ -118,69 +118,75 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = str(messaging_event["message"]["text"]).upper()  # the message's text
 
-                    if message_text.split()[0] in ["ANALYSIS", "PORTFOLIO", "HELP"]:
-                        if message_text.split()[0] == "ANALYSIS":
-                            # if message_text.split()[1] and message_text.split()[2] and message_text.split()[3]:
-                            #     scenario = message_text.split()[1].upper()
-                            #     type = message_text.split()[2].upper()
-                            #     field = str(messaging_event["message"]["text"]).split()[3]
+                    try:
+                        
+                        if message_text.split()[0] in ["ANALYSIS", "PORTFOLIO", "HELP"]:
+                            if message_text.split()[0] == "ANALYSIS":
+                                if message_text.split()[1] and message_text.split()[2] and message_text.split()[3]:
+                                    scenario = message_text.split()[1].upper()
+                                    type = message_text.split()[2].upper()
+                                    field = str(messaging_event["message"]["text"]).split()[3]
 
-                                try:
-                                    result = blackrock.analyzePortfolio(scenario, type, field)
-                                    send_message(sender_id, str(result))
-                                except Exception as e:
-                                    send_message(sender_id, "Something went wrong :( Please try again!")
-                                    log(traceback.print_exc())
-                                    pass
-                        elif message_text.split()[0] == "PORTFOLIO":
-                            if message_text.split()[1] == "SHOW":
+                                    try:
+                                        result = blackrock.analyzePortfolio(scenario, type, field)
+                                        send_message(sender_id, str(result))
+                                    except Exception as e:
+                                        send_message(sender_id, "Something went wrong :( Please try again!")
+                                        log(traceback.print_exc())
+                                        pass
+                            elif message_text.split()[0] == "PORTFOLIO":
+                                if message_text.split()[1] == "SHOW":
+                                    send_portfolio(sender_id)
+                                elif message_text.split()[1] in ["BUY", "SELL"] and len(message_text.split()) == 4:
+                                    ticker = message_text.split()[2]
+                                    qty = message_text.split()[3]
+
+                                    try:
+                                        blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id)
+                                    except Exception as e:
+                                        send_message(sender_id, "Something went wrong :( Please try again!")
+                                        log(traceback.print_exc())
+                                        pass
+              
+                            elif message_text == "HELP":
+                                send_help_message(sender_id)
+                            else:
+                                send_greeting_message(sender_id)
+
+                        else:
+
+                            luis_response = get_response_from_luis_api(message_text)
+                            expected_intent = luis_response["intents"][0]["intent"]
+
+                            if expected_intent in ["buySecurity", "sellSecurity"]:
+                                if luis_response["intents"][0]["actions"][0]["parameters"]:
+                                    param_dict = {}
+                                    params = luis_response["intents"][0]["actions"][0]["parameters"]
+                                    for param in params:
+                                        if param["name"].upper() in ["QUANTITY", "TICKER", "TRADE_TYPE"] and param["value"][0]["entity"]:
+                                            param_dict[param["name"]] = str(param["value"][0]["entity"]).upper()
+
+                                        if len(param_dict) == 3:
+                                            try:
+                                                blackrock.portfolio(param_dict["ticker"], param_dict["quantity"], param_dict["trade_type"], sender_id)
+                                            except Exception as e:
+                                                send_message(sender_id, "Something went wrong :( Please try again!")
+                                                log(traceback.print_exc())
+                                                pass
+                            elif expected_intent == "showPortfolio":
                                 send_portfolio(sender_id)
-                            elif message_text.split()[1] in ["BUY", "SELL"] and len(message_text.split()) == 4:
-                                ticker = message_text.split()[2]
-                                qty = message_text.split()[3]
+                            elif expected_intent == "greetings":
+                                send_greeting_message(sender_id)
+                            elif expected_intent == "riskAnalysis":
+                                pass # for now
+                            else:
+                                send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the default operations!")
+                                send_help_message(sender_id)
 
-                                try:
-                                    blackrock.portfolio(ticker, qty, message_text.split()[1], sender_id)
-                                except Exception as e:
-                                    send_message(sender_id, "Something went wrong :( Please try again!")
-                                    log(traceback.print_exc())
-                                    pass
-          
-                        elif message_text == "HELP":
-                            send_help_message(sender_id)
-                        else:
-                            send_greeting_message(sender_id)
-
-                    else:
-
-                        luis_response = get_response_from_luis_api(message_text)
-                        expected_intent = luis_response["intents"][0]["intent"]
-
-                        if expected_intent in ["buySecurity", "sellSecurity"]:
-                            if luis_response["intents"][0]["actions"][0]["parameters"]:
-                                param_dict = {}
-                                params = luis_response["intents"][0]["actions"][0]["parameters"]
-                                for param in params:
-                                    if param["name"].upper() in ["QUANTITY", "TICKER", "TRADE_TYPE"] and param["value"][0]["entity"]:
-                                        param_dict[param["name"]] = str(param["value"][0]["entity"]).upper()
-
-                                    if len(param_dict) == 3:
-                                        try:
-                                            blackrock.portfolio(param_dict["ticker"], param_dict["quantity"], param_dict["trade_type"], sender_id)
-                                        except Exception as e:
-                                            send_message(sender_id, "Something went wrong :( Please try again!")
-                                            log(traceback.print_exc())
-                                            pass
-                        elif expected_intent == "showPortfolio":
-                            send_portfolio(sender_id)
-                        elif expected_intent == "greetings":
-                            send_greeting_message(sender_id)
-                        elif expected_intent == "riskAnalysis":
-                            pass # for now
-                        else:
-                            send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the default operations!")
-                            send_help_message(sender_id)
-
+                    except Exception:
+                        send_message(sender_id, "Something went wrong :( Please try again!")
+                        log(traceback.print_exc())
+                        pass
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
