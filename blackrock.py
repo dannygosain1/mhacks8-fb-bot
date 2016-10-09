@@ -16,6 +16,8 @@ headers = {
     'Content-Type': 'text/html',
 }
 
+scenarioFields = ['MS_US','MS_USD_DN','MS_USYC_UP','RAPID_DF','MSVIX_up','MS_USCPIUP']
+
 def getResponseData(url):
     response = requests.post(url, headers=headers)
     data = json.loads(response.text)
@@ -49,14 +51,15 @@ def getYahooPrices(ticker):
     return prices
 
 def insertPortfolioDB(data,senderID):
-    app.send_create_message(data,senderID)
+    app.send_create_message(senderID,data)
     return True
 
 def deletePortfolioDB(ticker,senderID):
+    app.send_delete_message(senderID,ticker)
     return True
 
 def updatePortfolioDB(data,senderID):
-    app.send_update_message(data,senderID)
+    app.send_update_message(senderID,data)
     return True
 
 def getPortfolio():
