@@ -35,7 +35,7 @@ def send_greeting_message(sender_id):
 
 # Send existing portfolio to user
 def send_portfolio(sender_id):
-    portfolio = dumps(mongo.db.portfolio.find( {} ))
+    portfolio = dumps(mongo.db.portfolio.find( {},{'_id': false} ))
     send_message(sender_id, portfolio)
 
 @app.route('/')
