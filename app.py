@@ -178,7 +178,32 @@ def webhook():
                             elif expected_intent == "greetings":
                                 send_greeting_message(sender_id)
                             elif expected_intent == "riskAnalysis":
-                                pass # for now
+                                if luis_response["intents"][0]["actions"][0]["parameters"]:
+                                    param_dict = {}
+                                    params = luis_response["intents"][0]["actions"][0]["parameters"]
+                                    for param in params:
+                                        if param["name"].upper() in ["API_VAR", "RISK_VAR"] and param["value"][0]["entity"]:
+                                            param_dict[param["name"]] = ''.join(x for x in str(param["value"][0]["entity"]).title() if not x.isspace())
+
+                                            print param_dict
+
+                                        # if len(param_dict) == 1:
+                                        #     scenario = message_text.split()[1].upper()
+
+                                        #     if "RISK_VAR" == param_dict["name"]:
+                                        #         type = "RISK"
+                                        #     elif "API_VAR" == param_dict["name"]:
+                                        #         type = "ANALYTICS"
+
+                                        #     field = ''.join(x for x in 'make IT camel CaSe'.title() if not x.isspace())
+
+                                        #     try:
+                                        #         result = blackrock.analyzePortfolio(scenario, type, field)
+                                        #         send_message(sender_id, str(result))
+                                        #     except Exception as e:
+                                        #         send_message(sender_id, "Something went wrong :( Please try again!")
+                                        #         log(traceback.print_exc())
+                                        #         pass
                             else:
                                 send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the default operations!")
                                 send_help_message(sender_id)
