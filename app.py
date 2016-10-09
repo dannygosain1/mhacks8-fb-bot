@@ -37,9 +37,11 @@ def send_greeting_message(sender_id):
 
 # Send existing portfolio to user
 def send_portfolio(sender_id):
-    portfolio = dumps(mongo.db.portfolio.find( {},{'_id': False} ))
+    portfolio = mongo.db.portfolio.find( {},{'_id': False} )''
     for security in portfolio:
+        security = dumps(security)
         send_message(sender_id, security)
+
 
 # Get existing portfolio
 def get_portfolio():
