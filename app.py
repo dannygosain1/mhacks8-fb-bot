@@ -269,7 +269,7 @@ def send_message(recipient_id, message_text):
         log(r.status_code)
         log(r.text)
 
-send_message("1754917664758336", "yo")
+send_message("419493898174709", "yo")
 
 @app.route('/Graph')
 def Graph():
