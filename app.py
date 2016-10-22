@@ -39,6 +39,11 @@ def get_scenario(scenario):
     graphscenario = scenario_dict[scenario]
     return scenario_dict[scenario]
 
+
+def log(message):  # simple wrapper for logging to stdout on heroku
+    print str(message)
+    sys.stdout.flush()
+
 # Send help message to user
 def send_help_message(sender_id):
     help_message = ("Usage: [option] ... [argument] ... [params]\n\n"
@@ -243,7 +248,7 @@ def webhook():
 
 def send_message(recipient_id, message_text):
 
-    # log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
+    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
 
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
@@ -266,7 +271,6 @@ def send_message(recipient_id, message_text):
 
 send_message("1754917664758336", "yo")
 
-
 @app.route('/Graph')
 def Graph():
    temp = blackrock.analyzePortfolio(graphscenario,'GRAPH','')
@@ -281,11 +285,6 @@ def Graph():
 @app.route('/render')
 def render():
    return render_template('graph.html')
-
-def log(message):  # simple wrapper for logging to stdout on heroku
-    print str(message)
-    sys.stdout.flush()
-
 
 if __name__ == '__main__':
     app.run(debug=True)
