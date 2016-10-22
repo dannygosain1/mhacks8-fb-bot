@@ -216,10 +216,10 @@ def webhook():
                                 send_message(sender_id, "Sorry, didn't catch that :( Please use the help menu to use the default operations!")
                                 send_help_message(sender_id)
 
-                    except Exception:
-                        send_message(sender_id, "Something went wrong :( Please try again!")
-                        log(traceback.print_exc())
-                        pass
+                except Exception:
+                    send_message(sender_id, "Something went wrong :( Please try again!")
+                    log(traceback.print_exc())
+                    pass
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
