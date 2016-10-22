@@ -11,6 +11,7 @@ from bson.json_util import dumps
 
 
 graphscenario = ''
+
 # Create Flask App
 app = Flask(__name__)
 
@@ -110,8 +111,6 @@ def test():
 @app.route('/', methods=['POST'])
 def webhook():
 
-    log("hello0")
-
     # endpoint for processing incoming messaging events
     data = request.get_json()
     log(data)
@@ -121,11 +120,7 @@ def webhook():
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
 
-                log("hello1")
-
-                try:
-
-                    log("hello2")   
+                try: 
 
                     if messaging_event.get("message"):  # someone sent us a message
 
@@ -268,8 +263,6 @@ def send_message(recipient_id, message_text):
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
-
-send_message("419493898174709", "yo")
 
 @app.route('/Graph')
 def Graph():
